@@ -1,11 +1,20 @@
 package com.ironhack.midterm.dao;
 
+import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.BigDecimalType;
+import org.hibernate.type.CurrencyType;
+import org.hibernate.type.Type;
+import org.hibernate.usertype.CompositeUserType;
+
 import java.math.RoundingMode;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Currency;
 
 public class Money {
-
   private static final Currency USD = Currency.getInstance("USD");
   private static final RoundingMode DEFAULT_ROUNDING = RoundingMode.HALF_EVEN;
 
@@ -54,6 +63,10 @@ public class Money {
   public Currency getCurrency() {
     return this.currency;
   }
+
+  //  public void setCurrency(Currency currency) {
+  //    this.currency = currency;
+  //  }
 
   public BigDecimal getAmount() {
     return this.amount;
