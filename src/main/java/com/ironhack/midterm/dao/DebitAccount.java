@@ -11,13 +11,27 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
 @Entity
-public class DebitAccount extends Account {
+public abstract class DebitAccount extends Account {
 
   @NotNull private String secretKey;
   @NotNull private Date creationDate;
   @NotNull private Status status;
+
+  public DebitAccount(
+      Long id,
+      @NotNull Money balance,
+      @NotNull Money penaltyFee,
+      @NotNull AccountHolder primaryOwner,
+      AccountHolder secondaryOwner,
+      String secretKey,
+      Date creationDate,
+      Status status) {
+    super(id, balance, penaltyFee, primaryOwner, secondaryOwner);
+    this.secretKey = secretKey;
+    this.creationDate = creationDate;
+    this.status = status;
+  }
 }

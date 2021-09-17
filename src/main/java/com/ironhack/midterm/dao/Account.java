@@ -18,11 +18,11 @@ import javax.validation.constraints.NotNull;
 @TypeDef(
     name = "persistentMoneyAmountAndCurrency",
     typeClass = PersistentMoneyAmountAndCurrency.class)
-public class Account {
+public abstract class Account {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Setter(value = AccessLevel.NONE)
-  private int id;
+  private Long id;
 
   @Columns(
       columns = {

@@ -1,5 +1,6 @@
 package com.ironhack.midterm.dao;
 
+import com.ironhack.midterm.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
 @Entity
@@ -32,4 +33,20 @@ public class Savings extends DebitAccount {
   @Type(type = "persistentMoneyAmountAndCurrency")
   @NotNull
   private Money minimumBalance;
+
+  public Savings(
+      Long id,
+      Money balance,
+      Money penaltyFee,
+      AccountHolder primaryOwner,
+      AccountHolder secondaryOwner,
+      String secretKey,
+      Date creationDate,
+      Status status,
+      BigDecimal interestRate,
+      Money minimumBalance) {
+    super(id, balance, penaltyFee, primaryOwner, secondaryOwner, secretKey, creationDate, status);
+    this.interestRate = interestRate;
+    this.minimumBalance = minimumBalance;
+  }
 }

@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor
-// @AllArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
 @Entity
@@ -16,7 +16,7 @@ public class AccountHolder {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Setter(value = AccessLevel.NONE)
-  private int id;
+  private Long id;
 
   private String name;
   private Date dateOfBirth;
