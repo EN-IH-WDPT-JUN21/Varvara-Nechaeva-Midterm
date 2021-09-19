@@ -1,11 +1,13 @@
-package com.ironhack.midterm.dao;
+package com.ironhack.midterm.dao.account;
 
+import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.utils.Money;
+import com.ironhack.midterm.utils.PersistentMoneyAmountAndCurrency;
 import lombok.*;
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.annotation.processing.Generated;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 

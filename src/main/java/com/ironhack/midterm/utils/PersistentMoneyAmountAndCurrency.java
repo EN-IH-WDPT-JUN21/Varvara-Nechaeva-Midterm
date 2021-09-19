@@ -1,4 +1,4 @@
-package com.ironhack.midterm.dao;
+package com.ironhack.midterm.utils;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;

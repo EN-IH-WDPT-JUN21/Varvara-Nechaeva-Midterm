@@ -1,5 +1,7 @@
-package com.ironhack.midterm.dao;
+package com.ironhack.midterm.dao.account;
 
+import com.ironhack.midterm.utils.Money;
+import com.ironhack.midterm.utils.PersistentMoneyAmountAndCurrency;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,11 +9,11 @@ import lombok.Setter;
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,22 +23,15 @@ import javax.validation.constraints.NotNull;
 @TypeDef(
     name = "persistentMoneyAmountAndCurrency",
     typeClass = PersistentMoneyAmountAndCurrency.class)
-public class Checking extends DebitAccount {
+public class CreditCard extends Account {
   @Columns(
       columns = {
-        @Column(name = "minimum_balance_currency", length = 3),
-        @Column(name = "minimum_balance_amount", precision = 19, scale = 5)
+        @Column(name = "credit_limit_currency", length = 3),
+        @Column(name = "credit_limit_amount", precision = 19, scale = 5)
       })
   @Type(type = "persistentMoneyAmountAndCurrency")
   @NotNull
-  private Money minimumBalance;
+  private Money creditLimit;
 
-  @Columns(
-      columns = {
-        @Column(name = "monthly_maintenance_fee_currency", length = 3),
-        @Column(name = "monthly_maintenance_fee_amount", precision = 19, scale = 5)
-      })
-  @Type(type = "persistentMoneyAmountAndCurrency")
-  @NotNull
-  private Money monthlyMaintenanceFee;
+  @NotNull private BigDecimal interestRate;
 }

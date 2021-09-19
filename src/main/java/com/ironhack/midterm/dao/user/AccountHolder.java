@@ -1,6 +1,7 @@
-package com.ironhack.midterm.dao;
+package com.ironhack.midterm.dao.user;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.ironhack.midterm.utils.Address;
+import com.ironhack.midterm.dao.account.Account;
 import lombok.*;
 
 import javax.persistence.*;

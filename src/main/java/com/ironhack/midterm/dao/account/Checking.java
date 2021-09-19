@@ -1,6 +1,7 @@
-package com.ironhack.midterm.dao;
+package com.ironhack.midterm.dao.account;
 
-import com.ironhack.midterm.enums.Status;
+import com.ironhack.midterm.utils.Money;
+import com.ironhack.midterm.utils.PersistentMoneyAmountAndCurrency;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,19 +13,16 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
-import java.util.Date;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
 @Entity
 @TypeDef(
     name = "persistentMoneyAmountAndCurrency",
     typeClass = PersistentMoneyAmountAndCurrency.class)
-public class Savings extends DebitAccount {
-  @NotNull private BigDecimal interestRate;
-
+public class Checking extends DebitAccount {
   @Columns(
       columns = {
         @Column(name = "minimum_balance_currency", length = 3),
@@ -34,19 +32,12 @@ public class Savings extends DebitAccount {
   @NotNull
   private Money minimumBalance;
 
-  public Savings(
-      Long id,
-      Money balance,
-      Money penaltyFee,
-      AccountHolder primaryOwner,
-      AccountHolder secondaryOwner,
-      String secretKey,
-      Date creationDate,
-      Status status,
-      BigDecimal interestRate,
-      Money minimumBalance) {
-    super(id, balance, penaltyFee, primaryOwner, secondaryOwner, secretKey, creationDate, status);
-    this.interestRate = interestRate;
-    this.minimumBalance = minimumBalance;
-  }
+  @Columns(
+      columns = {
+        @Column(name = "monthly_maintenance_fee_currency", length = 3),
+        @Column(name = "monthly_maintenance_fee_amount", precision = 19, scale = 5)
+      })
+  @Type(type = "persistentMoneyAmountAndCurrency")
+  @NotNull
+  private Money monthlyMaintenanceFee;
 }
