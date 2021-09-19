@@ -76,7 +76,7 @@ class AccountControllerTest {
 
   @SneakyThrows
   @Test
-  void getBalance() {
+  void getBalanceExistingAccount() {
     MvcResult mvcResult =
         mockMvc.perform(get("/account/1/balance")).andExpect(status().isOk()).andReturn();
     assertTrue(mvcResult.getResponse().getContentAsString().contains(("100.00")));
@@ -85,7 +85,15 @@ class AccountControllerTest {
 
   @SneakyThrows
   @Test
-  void updateBalance() {
+  void getBalanceNonExistingAccount() {
+    MvcResult mvcResult =
+        mockMvc.perform(get("/account/999/balance")).andExpect(status().isOk()).andReturn();
+    assertTrue(mvcResult.getResponse().getContentAsString().isEmpty());
+  }
+
+  @SneakyThrows
+  @Test
+  void updateExistingAccountBalance() {
     String body =
         objectMapper.writeValueAsString(new MoneyDTO(new Money(new BigDecimal("200.00"))));
     MvcResult mvcResult =
@@ -96,5 +104,19 @@ class AccountControllerTest {
             .andReturn();
     assertTrue(mvcResult.getResponse().getContentAsString().contains(("200.00")));
     assertTrue(mvcResult.getResponse().getContentAsString().contains(("USD")));
+  }
+
+  @SneakyThrows
+  @Test
+  void updateNonExistingAccountBalance() {
+    String body =
+        objectMapper.writeValueAsString(new MoneyDTO(new Money(new BigDecimal("200.00"))));
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                patch("/account/999/balance").content(body).contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn();
+    assertTrue(mvcResult.getResponse().getContentAsString().isEmpty());
   }
 }
