@@ -87,8 +87,7 @@ class AccountControllerTest {
   @Test
   void getBalanceNonExistingAccount() {
     MvcResult mvcResult =
-        mockMvc.perform(get("/account/999/balance")).andExpect(status().isOk()).andReturn();
-    assertTrue(mvcResult.getResponse().getContentAsString().isEmpty());
+        mockMvc.perform(get("/account/999/balance")).andExpect(status().isNotFound()).andReturn();
   }
 
   @SneakyThrows
@@ -115,8 +114,7 @@ class AccountControllerTest {
         mockMvc
             .perform(
                 patch("/account/999/balance").content(body).contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
+            .andExpect(status().isNotFound())
             .andReturn();
-    assertTrue(mvcResult.getResponse().getContentAsString().isEmpty());
   }
 }

@@ -7,8 +7,10 @@ import com.ironhack.midterm.utils.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.nio.file.ReadOnlyFileSystemException;
 import java.util.Optional;
 
 @RestController
@@ -20,19 +22,28 @@ public class AccountController {
   @GetMapping("/{id}/balance")
   @ResponseStatus(HttpStatus.OK)
   public Money getBalance(@PathVariable(name = "id") long id) {
-    Optional<Account> optionalAccount = accountRepository.findById(id);
-    return optionalAccount.isPresent() ? optionalAccount.get().getBalance() : null;
+    Account account =
+        accountRepository
+            .findById(id)
+            .orElseThrow(
+                () ->
+                    new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Account " + id + " not found"));
+    return account.getBalance();
   }
 
   @PatchMapping("/{id}/balance")
   @ResponseStatus(HttpStatus.OK)
   public Money updateBalance(
       @PathVariable(name = "id") long id, @RequestBody @Valid MoneyDTO moneyDTO) {
-    Optional<Account> optionalAccount = accountRepository.findById(id);
-    if (optionalAccount.isEmpty()) {
-      return null;
-    }
-    Account account = optionalAccount.get();
+    Account account =
+        accountRepository
+            .findById(id)
+            .orElseThrow(
+                () ->
+                    new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Account " + id + " not found"));
+
     account.setBalance(moneyDTO.asMoney());
     account = accountRepository.save(account);
     return account.getBalance();
