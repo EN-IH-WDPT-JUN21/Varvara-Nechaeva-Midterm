@@ -37,6 +37,14 @@ public class Savings extends DebitAccount {
   @NotNull
   private Money minimumBalance = Constants.SAVINGS_DEFAULT_MINIMUM_BALANCE;
 
+  @Override
+  public void setBalance(Money balance) {
+    if (balance.getAmount().compareTo(this.minimumBalance.getAmount()) < 0) {
+      balance.decreaseAmount(this.getPenaltyFee());
+    }
+    super.setBalance(balance);
+  }
+
   public Savings(
       Long id,
       Money balance,

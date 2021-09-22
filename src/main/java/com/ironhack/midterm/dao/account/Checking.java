@@ -33,6 +33,14 @@ public class Checking extends DebitAccount {
   @NotNull
   private Money minimumBalance = Constants.CHECKING_MINUM_BALANCE;
 
+  @Override
+  public void setBalance(Money balance) {
+    if (balance.getAmount().compareTo(this.minimumBalance.getAmount()) < 0) {
+      balance.decreaseAmount(this.getPenaltyFee());
+    }
+    super.setBalance(balance);
+  }
+
   @Columns(
       columns = {
         @Column(name = "monthly_maintenance_fee_currency", length = 3),
