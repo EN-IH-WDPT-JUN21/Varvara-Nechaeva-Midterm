@@ -1,6 +1,7 @@
 package com.ironhack.midterm.dao.account;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.utils.Constants;
 import com.ironhack.midterm.utils.Money;
 import com.ironhack.midterm.utils.PersistentMoneyAmountAndCurrency;
 import com.ironhack.midterm.enums.Status;
@@ -25,7 +26,7 @@ import java.util.Date;
     name = "persistentMoneyAmountAndCurrency",
     typeClass = PersistentMoneyAmountAndCurrency.class)
 public class Savings extends DebitAccount {
-  @NotNull private BigDecimal interestRate;
+  @NotNull private BigDecimal interestRate = Constants.SAVINGS_DEFAULT_INTEREST_RATE;
 
   @Columns(
       columns = {
@@ -34,7 +35,7 @@ public class Savings extends DebitAccount {
       })
   @Type(type = "persistentMoneyAmountAndCurrency")
   @NotNull
-  private Money minimumBalance;
+  private Money minimumBalance = Constants.SAVINGS_DEFAULT_MINIMUM_BALANCE;
 
   public Savings(
       Long id,
@@ -48,7 +49,19 @@ public class Savings extends DebitAccount {
       BigDecimal interestRate,
       Money minimumBalance) {
     super(id, balance, penaltyFee, primaryOwner, secondaryOwner, secretKey, creationDate, status);
-    this.interestRate = interestRate;
+    // Savings accounts may be instantiated with an interest rate other than the default, with a
+    // maximum interest rate of 0.5
+    this.interestRate = Constants.SAVINGS_MAXIMUM_INTEREST_RATE.min(interestRate);
+    // Savings accounts may be instantiated with a minimum balance of less than 1000 but no lower
+    // than 100
+    if (-1
+        == minimumBalance
+            .getAmount()
+            .compareTo(Constants.SAVINGS_MINIMUM_MINIMUM_BALANCE.getAmount())) {
+      minimumBalance =
+          new Money(
+              Constants.SAVINGS_MINIMUM_MINIMUM_BALANCE.getAmount(), minimumBalance.getCurrency());
+    }
     this.minimumBalance = minimumBalance;
   }
 }
