@@ -1,6 +1,7 @@
 package com.ironhack.midterm.dao.account;
 
 import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.utils.Constants;
 import com.ironhack.midterm.utils.Money;
 import com.ironhack.midterm.utils.PersistentMoneyAmountAndCurrency;
 import lombok.*;
@@ -42,7 +43,7 @@ public abstract class Account {
       })
   @Type(type = "persistentMoneyAmountAndCurrency")
   @NotNull
-  private Money penaltyFee;
+  private Money penaltyFee = Constants.DEFAULT_PENALTY_FEE;
 
   @NotNull @ManyToOne private AccountHolder primaryOwner;
 

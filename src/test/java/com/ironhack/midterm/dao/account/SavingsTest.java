@@ -35,5 +35,6 @@ class SavingsTest {
     Savings savings = new Savings();
     assertEquals(Constants.SAVINGS_DEFAULT_INTEREST_RATE, savings.getInterestRate());
     assertEquals(Constants.SAVINGS_DEFAULT_MINIMUM_BALANCE, savings.getMinimumBalance());
+    assertEquals(Constants.DEFAULT_PENALTY_FEE, savings.getPenaltyFee());
   }
 }

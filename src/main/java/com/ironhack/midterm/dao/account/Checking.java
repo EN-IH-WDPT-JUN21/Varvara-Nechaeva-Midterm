@@ -1,5 +1,6 @@
 package com.ironhack.midterm.dao.account;
 
+import com.ironhack.midterm.utils.Constants;
 import com.ironhack.midterm.utils.Money;
 import com.ironhack.midterm.utils.PersistentMoneyAmountAndCurrency;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,7 @@ public class Checking extends DebitAccount {
       })
   @Type(type = "persistentMoneyAmountAndCurrency")
   @NotNull
-  private Money minimumBalance;
+  private Money minimumBalance = Constants.CHECKING_MINUM_BALANCE;
 
   @Columns(
       columns = {
@@ -39,5 +40,5 @@ public class Checking extends DebitAccount {
       })
   @Type(type = "persistentMoneyAmountAndCurrency")
   @NotNull
-  private Money monthlyMaintenanceFee;
+  private Money monthlyMaintenanceFee = Constants.CHECKING_MONTHLY_MAINTENANCE_FEE;
 }
