@@ -5,6 +5,9 @@ import com.ironhack.midterm.utils.Constants;
 import com.ironhack.midterm.utils.Money;
 import com.ironhack.midterm.utils.PersistentMoneyAmountAndCurrency;
 import com.ironhack.midterm.enums.Status;
+
+import static com.ironhack.midterm.utils.Utils.getDiffYears;
+import static com.ironhack.midterm.utils.Utils.oneYearBack;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -43,6 +46,26 @@ public class Savings extends DebitAccount {
       balance.decreaseAmount(this.getPenaltyFee());
     }
     super.setBalance(balance);
+  }
+
+  private Date lastInterest;
+
+  public Date getLastInterest() {
+    if (null == lastInterest) {
+      lastInterest = getCreationDate();
+    }
+    return lastInterest;
+  }
+
+  @Override
+  public Money getBalance() {
+    if (getLastInterest().before(oneYearBack())) {
+      for (int i = 0; i < getDiffYears(getLastInterest(), new Date()); i++) {
+        super.getBalance().increaseAmount(super.getBalance().getAmount().multiply(interestRate));
+      }
+      setLastInterest(new Date());
+    }
+    return super.getBalance();
   }
 
   public Savings(
