@@ -3,6 +3,7 @@ package com.ironhack.midterm.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ironhack.midterm.controller.dto.MoneyDTO;
 import com.ironhack.midterm.dao.account.Savings;
+import com.ironhack.midterm.dao.test_utils.Populator;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.Admin;
 import com.ironhack.midterm.enums.Status;
@@ -48,38 +49,13 @@ class AccountControllerTest {
   @BeforeEach
   void setup(
       @Autowired WebApplicationContext webApplicationContext,
-      @Autowired AccountRepository accountRepository,
-      @Autowired AccountHolderRepository accountHolderRepository,
+      @Autowired Populator populator,
       @Autowired AdminRepository adminRepository) {
+
     mockMvc =
         MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
 
-    Address primaryAddress = new Address("Main Street 1", "Main City", "9999");
-    Address mailingAddress = new Address("Main Street 2", "Main City", "9991");
-
-    SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
-
-    String dateInString = "7-Jun-2013";
-    Date date = formatter.parse(dateInString);
-
-    AccountHolder accountHolder1 =
-        new AccountHolder(0L, "Vasja Pupkin", date, primaryAddress, mailingAddress, null, null);
-    accountHolder1 = accountHolderRepository.save(accountHolder1);
-
-    Savings savings =
-        new Savings(
-            0L,
-            new Money(new BigDecimal("100.00"), Currency.getInstance("USD")),
-            new Money(new BigDecimal("100.00"), Currency.getInstance("USD")),
-            accountHolder1,
-            null,
-            "abc",
-            date,
-            Status.ACTIVE,
-            new BigDecimal("1.23"),
-            new Money(new BigDecimal("10.00"), Currency.getInstance("USD")));
-
-    accountRepository.save(savings);
+    populator.populate();
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     adminRepository.save(new Admin(0L, "admin", passwordEncoder.encode("123456")));
@@ -90,8 +66,8 @@ class AccountControllerTest {
   void getBalanceExistingAccount() {
     MvcResult mvcResult =
         mockMvc.perform(get("/account/1/balance")).andExpect(status().isOk()).andReturn();
-    assertTrue(mvcResult.getResponse().getContentAsString().contains(("100.00")));
-    assertTrue(mvcResult.getResponse().getContentAsString().contains(("USD")));
+    assertTrue(mvcResult.getResponse().getContentAsString().contains("100.00"));
+    assertTrue(mvcResult.getResponse().getContentAsString().contains("USD"));
   }
 
   @SneakyThrows
