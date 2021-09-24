@@ -11,6 +11,7 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -48,4 +49,6 @@ public abstract class Account {
   @NotNull @ManyToOne private AccountHolder primaryOwner;
 
   @ManyToOne private AccountHolder secondaryOwner;
+
+  @NotNull private Date creationDate;
 }

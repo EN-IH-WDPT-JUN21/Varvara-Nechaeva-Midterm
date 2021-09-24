@@ -18,7 +18,6 @@ import java.util.Date;
 public abstract class DebitAccount extends Account {
 
   @NotNull private String secretKey;
-  @NotNull private Date creationDate;
   @NotNull private Status status;
 
   public DebitAccount(
@@ -30,9 +29,8 @@ public abstract class DebitAccount extends Account {
       String secretKey,
       Date creationDate,
       Status status) {
-    super(id, balance, penaltyFee, primaryOwner, secondaryOwner);
+    super(id, balance, penaltyFee, primaryOwner, secondaryOwner, creationDate);
     this.secretKey = secretKey;
-    this.creationDate = creationDate;
     this.status = status;
   }
 }

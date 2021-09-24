@@ -35,4 +35,27 @@ public abstract class Utils {
     cal.setTime(date);
     return cal;
   }
+
+  public static Date oneMonthBack() {
+    Calendar cal = Calendar.getInstance();
+    cal.add(MONTH, -1);
+    return cal.getTime();
+  }
+
+  public static Date twoMonthsBack() {
+    Calendar cal = Calendar.getInstance();
+    cal.add(MONTH, -2);
+    return cal.getTime();
+  }
+
+  public static int getDiffMonths(Date first, Date last) {
+    Calendar a = getCalendar(first);
+    Calendar b = getCalendar(last);
+    int diffYears = getDiffYears(first, last);
+    int diff = b.get(MONTH) - a.get(MONTH);
+    if (a.get(DATE) > b.get(DATE)) {
+      diff--;
+    }
+    return diffYears * 12 + diff;
+  }
 }
