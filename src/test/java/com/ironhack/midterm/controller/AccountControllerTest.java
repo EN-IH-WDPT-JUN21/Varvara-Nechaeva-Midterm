@@ -110,6 +110,24 @@ class AccountControllerTest {
 
   @SneakyThrows
   @Test
+  void updateOldAccountBalance() {
+    String body =
+        objectMapper.writeValueAsString(new MoneyDTO(new Money(new BigDecimal("200.00"))));
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                patch("/account/3/balance")
+                    .with(httpBasic("admin", "123456"))
+                    .content(body)
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn();
+    assertTrue(mvcResult.getResponse().getContentAsString().contains("200.00"));
+    assertTrue(mvcResult.getResponse().getContentAsString().contains("USD"));
+  }
+
+  @SneakyThrows
+  @Test
   void updateNonExistingAccountBalance() {
     String body =
         objectMapper.writeValueAsString(new MoneyDTO(new Money(new BigDecimal("200.00"))));

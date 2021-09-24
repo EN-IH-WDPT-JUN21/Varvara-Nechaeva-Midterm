@@ -7,6 +7,7 @@ import com.ironhack.midterm.repository.AccountHolderRepository;
 import com.ironhack.midterm.repository.AccountRepository;
 import com.ironhack.midterm.utils.Address;
 import com.ironhack.midterm.utils.Money;
+import com.ironhack.midterm.utils.Utils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +52,33 @@ public class Populator {
             new BigDecimal("1.23"),
             new Money(new BigDecimal("10.00"), Currency.getInstance("USD")));
 
+    Savings savings1 =
+        new Savings(
+            0L,
+            new Money(new BigDecimal("1100.00"), Currency.getInstance("USD")),
+            new Money(new BigDecimal("100.00"), Currency.getInstance("USD")),
+            accountHolder1,
+            null,
+            "abc",
+            new Date(),
+            Status.ACTIVE,
+            new BigDecimal("1.23"),
+            new Money(new BigDecimal("10.00"), Currency.getInstance("USD")));
+
     accountRepository.save(savings);
+    accountRepository.save(savings1);
+
+    accountRepository.save(
+        new Savings(
+            0L,
+            new Money(new BigDecimal("1000.00"), Currency.getInstance("USD")),
+            new Money(new BigDecimal("100.00"), Currency.getInstance("USD")),
+            accountHolder1,
+            null,
+            "abc",
+            Utils.oneYearBack(),
+            Status.ACTIVE,
+            new BigDecimal("0.01"),
+            new Money(new BigDecimal("10.00"), Currency.getInstance("USD"))));
   }
 }
