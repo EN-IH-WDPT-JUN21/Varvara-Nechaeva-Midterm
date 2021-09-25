@@ -1,5 +1,6 @@
 package com.ironhack.midterm.dao.test_utils;
 
+import com.ironhack.midterm.dao.account.CreditCard;
 import com.ironhack.midterm.dao.account.Savings;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.enums.Status;
@@ -85,5 +86,16 @@ public class Populator {
             Status.ACTIVE,
             new BigDecimal("0.01"),
             new Money(new BigDecimal("10.00"), Currency.getInstance("USD"))));
+
+    accountRepository.save(
+        new CreditCard(
+            4L,
+            new Money(new BigDecimal("1000.00"), Currency.getInstance("USD")),
+            new Money(new BigDecimal("100.00"), Currency.getInstance("USD")),
+            accountHolder1,
+            null,
+            new Date(),
+            new Money(new BigDecimal("10000.00"), Currency.getInstance("USD")),
+            new BigDecimal("0.12")));
   }
 }

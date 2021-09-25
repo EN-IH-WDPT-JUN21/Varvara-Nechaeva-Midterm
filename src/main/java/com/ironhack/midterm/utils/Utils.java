@@ -58,4 +58,10 @@ public abstract class Utils {
     }
     return diffYears * 12 + diff;
   }
+
+  public static Date oneSecondBack() {
+    Calendar cal = Calendar.getInstance(Locale.US);
+    cal.add(SECOND, -1);
+    return cal.getTime();
+  }
 }

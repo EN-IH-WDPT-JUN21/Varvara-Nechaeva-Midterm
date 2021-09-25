@@ -78,8 +78,8 @@ public class CreditCard extends Account {
       @NotNull AccountHolder primaryOwner,
       AccountHolder secondaryOwner,
       @NotNull Date creationDate,
-      Money creditLimit,
-      BigDecimal interestRate) {
+      @NotNull Money creditLimit,
+      @NotNull BigDecimal interestRate) {
     super(id, balance, penaltyFee, primaryOwner, secondaryOwner, creationDate);
     if (1 == creditLimit.getAmount().compareTo(Constants.CREDIT_MAXIMUM_CREDIT_LIMIT.getAmount())) {
       creditLimit =
