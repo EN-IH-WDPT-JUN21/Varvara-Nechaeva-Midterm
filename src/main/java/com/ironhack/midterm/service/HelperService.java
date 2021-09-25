@@ -7,6 +7,7 @@ import com.ironhack.midterm.repository.AccountHolderRepository;
 import com.ironhack.midterm.repository.AccountRepository;
 import com.ironhack.midterm.utils.Address;
 import com.ironhack.midterm.utils.Money;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,8 @@ public class HelperService {
 
   @Autowired private AccountHolderRepository accountHolderRepository;
 
-  public void populate() throws ParseException {
+  @SneakyThrows
+  public void populate() {
     Address primaryAddress = new Address("Main Street 1", "Main City", "9999");
     Address mailingAddress = new Address("Main Street 2", "Main City", "9991");
 
