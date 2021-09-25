@@ -64,4 +64,16 @@ public abstract class Utils {
     cal.add(SECOND, -1);
     return cal.getTime();
   }
+
+  public static Date addTwentyFourHours(Date date) {
+    Calendar cal = getCalendar(date);
+    cal.add(HOUR, 24);
+    return cal.getTime();
+  }
+
+  public static Date subtractTwentyFourHours(Date date) {
+    Calendar cal = getCalendar(date);
+    cal.add(HOUR, -24);
+    return cal.getTime();
+  }
 }

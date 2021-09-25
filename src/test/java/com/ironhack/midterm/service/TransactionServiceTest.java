@@ -108,4 +108,44 @@ class TransactionServiceTest {
     DebitAccount debitAccount = (DebitAccount) accountRepository.findById(2L).get();
     assertEquals(Status.ACTIVE, debitAccount.getStatus());
   }
+
+  @Test
+  void MovingTooMuchMoneyIsProbablyFraud() {
+    assertThrows(
+        ResponseStatusException.class,
+        () -> {
+          transactionService.moveMoney(
+              1L, 2L, new Money(new BigDecimal(20), Currency.getInstance("USD")));
+        });
+
+    assertTrue(
+        new BigDecimal("1100")
+                .compareTo(accountRepository.findById(2L).get().getBalance().getAmount())
+            == 0);
+    assertTrue(
+        new BigDecimal("100")
+                .compareTo(accountRepository.findById(1L).get().getBalance().getAmount())
+            == 0);
+    DebitAccount debitAccount = (DebitAccount) accountRepository.findById(1L).get();
+    assertEquals(Status.FROZEN, debitAccount.getStatus());
+  }
+
+  @Test
+  void MovingMoneyFromFrozenAccountFails() {
+    assertThrows(
+        ResponseStatusException.class,
+        () -> {
+          transactionService.moveMoney(
+              5L, 2L, new Money(new BigDecimal(10), Currency.getInstance("USD")));
+        });
+
+    assertTrue(
+        new BigDecimal("1100")
+                .compareTo(accountRepository.findById(2L).get().getBalance().getAmount())
+            == 0);
+    assertTrue(
+        new BigDecimal("100")
+                .compareTo(accountRepository.findById(5L).get().getBalance().getAmount())
+            == 0);
+  }
 }
