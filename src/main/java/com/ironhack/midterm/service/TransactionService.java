@@ -116,8 +116,8 @@ public class TransactionService {
       var sum = new Money(new BigDecimal(0));
       var d24 = addTwentyFourHours(t.getTransactionDate());
       for (var tt : transactions) {
-        if (tt.getTransactionDate().before(d24)
-            && tt.getTransactionDate().after(t.getTransactionDate())) {
+        if (tt.getTransactionDate().before(d24) // strict unequality
+            && tt.getTransactionDate().compareTo(t.getTransactionDate()) >= 0) {
           sum.increaseAmount(tt.getMoney());
         }
       }
