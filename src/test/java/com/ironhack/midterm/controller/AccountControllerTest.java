@@ -25,8 +25,7 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -49,6 +48,58 @@ class AccountControllerTest {
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     adminRepository.save(new Admin(0L, "admin", passwordEncoder.encode("123456")));
+  }
+
+  @SneakyThrows
+  @Test
+  void moveMoneyCorrectPrimaryOwnerName() {
+    String body = objectMapper.writeValueAsString(new MoneyDTO(new Money(new BigDecimal("10.00"))));
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                post("/account/1/transfer")
+                    .content(body)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .param("to_id", "2")
+                    .param("to_name", "Vasja Pupkin"))
+            .andExpect(status().isOk())
+            .andReturn();
+    assertTrue(mvcResult.getResponse().getContentAsString().contains("10.00"));
+    assertTrue(mvcResult.getResponse().getContentAsString().contains("USD"));
+  }
+
+  @SneakyThrows
+  @Test
+  void moveMoneyCorrectSecondaryOwnerName() {
+    String body = objectMapper.writeValueAsString(new MoneyDTO(new Money(new BigDecimal("10.00"))));
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                post("/account/1/transfer")
+                    .content(body)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .param("to_id", "2")
+                    .param("to_name", "Petja Pupkin"))
+            .andExpect(status().isOk())
+            .andReturn();
+    assertTrue(mvcResult.getResponse().getContentAsString().contains("10.00"));
+    assertTrue(mvcResult.getResponse().getContentAsString().contains("USD"));
+  }
+
+  @SneakyThrows
+  @Test
+  void moveMoneyIncorrectOwnerName() {
+    String body = objectMapper.writeValueAsString(new MoneyDTO(new Money(new BigDecimal("10.00"))));
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                post("/account/1/transfer")
+                    .content(body)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .param("to_id", "2")
+                    .param("to_name", "Not Vasja Pupkin"))
+            .andExpect(status().isBadRequest())
+            .andReturn();
   }
 
   @SneakyThrows

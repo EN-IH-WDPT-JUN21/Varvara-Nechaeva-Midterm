@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/account")
@@ -22,16 +23,31 @@ public class AccountController {
   @Autowired AccountRepository accountRepository;
   @Autowired TransactionService transactionService;
 
-  @PostMapping("/{from_id}/transfer/{to_id}")
+  @PostMapping("/{from_id}/transfer")
   @ResponseStatus(HttpStatus.OK)
   public Transaction transferMoney(
       @PathVariable(name = "from_id") long fromId,
-      @PathVariable(name = "to_id") long toId,
+      @RequestParam(name = "to_id") long toId,
+      @RequestParam(name = "to_name") String toName,
       @RequestBody @Valid MoneyDTO moneyDTO) {
     //    AccountHolder accountHolder = new AccountHolder(); // currently authenticated user????
     //
     //    if (id != accountHolder.getId())
     //      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized");
+
+    Account accountTo =
+        accountRepository
+            .findById(toId)
+            .orElseThrow(
+                () ->
+                    new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Account with id " + toId + " doesn't exist"));
+
+    if (!(Objects.equals(accountTo.getPrimaryOwner().getName(), toName)
+        || Objects.equals(accountTo.getSecondaryOwner().getName(), toName))) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Wrong owner name for account with id " + toId);
+    }
 
     return transactionService.moveMoney(fromId, toId, moneyDTO.asMoney());
   }

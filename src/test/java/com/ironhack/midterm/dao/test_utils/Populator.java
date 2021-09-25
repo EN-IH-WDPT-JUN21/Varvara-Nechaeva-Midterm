@@ -39,9 +39,14 @@ public class Populator {
         new AccountHolder(0L, "Vasja Pupkin", date, primaryAddress, mailingAddress, null, null);
     accountHolder1 = accountHolderRepository.save(accountHolder1);
 
+    var accountHolder2 =
+        accountHolderRepository.save(
+            new AccountHolder(
+                0L, "Petja Pupkin", date, primaryAddress, mailingAddress, null, null));
+
     Savings savings =
         new Savings(
-            0L,
+            1L,
             new Money(new BigDecimal("100.00"), Currency.getInstance("USD")),
             new Money(new BigDecimal("100.00"), Currency.getInstance("USD")),
             accountHolder1,
@@ -54,11 +59,11 @@ public class Populator {
 
     Savings savings1 =
         new Savings(
-            0L,
+            2L,
             new Money(new BigDecimal("1100.00"), Currency.getInstance("USD")),
             new Money(new BigDecimal("100.00"), Currency.getInstance("USD")),
             accountHolder1,
-            null,
+            accountHolder2,
             "abc",
             new Date(),
             Status.ACTIVE,
@@ -70,7 +75,7 @@ public class Populator {
 
     accountRepository.save(
         new Savings(
-            0L,
+            3L,
             new Money(new BigDecimal("1000.00"), Currency.getInstance("USD")),
             new Money(new BigDecimal("100.00"), Currency.getInstance("USD")),
             accountHolder1,
