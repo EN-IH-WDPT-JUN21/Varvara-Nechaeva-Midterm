@@ -8,14 +8,14 @@ import static java.util.Calendar.*;
 public abstract class Utils {
 
   public static Date oneYearBack() {
-    Calendar cal = Calendar.getInstance();
+    Calendar cal = Calendar.getInstance(Locale.US);
     cal.add(Calendar.YEAR, -1); // to get previous year add -1
     return cal.getTime();
   }
 
   public static Date twoYearsBack() {
-    Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.YEAR, -2); // to get previous year add -1
+    Calendar cal = Calendar.getInstance(Locale.US);
+    cal.add(Calendar.YEAR, -2);
     return cal.getTime();
   }
 
@@ -37,13 +37,13 @@ public abstract class Utils {
   }
 
   public static Date oneMonthBack() {
-    Calendar cal = Calendar.getInstance();
+    Calendar cal = Calendar.getInstance(Locale.US);
     cal.add(MONTH, -1);
     return cal.getTime();
   }
 
   public static Date twoMonthsBack() {
-    Calendar cal = Calendar.getInstance();
+    Calendar cal = Calendar.getInstance(Locale.US);
     cal.add(MONTH, -2);
     return cal.getTime();
   }

@@ -1,6 +1,5 @@
 package com.ironhack.midterm.service;
 
-import com.ironhack.midterm.dao.account.Savings;
 import com.ironhack.midterm.dao.test_utils.Populator;
 import com.ironhack.midterm.repository.AccountRepository;
 import com.ironhack.midterm.utils.Money;
@@ -8,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.server.ResponseStatusException;
 

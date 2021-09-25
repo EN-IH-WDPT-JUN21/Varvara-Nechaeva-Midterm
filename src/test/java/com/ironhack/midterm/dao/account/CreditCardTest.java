@@ -25,14 +25,14 @@ class CreditCardTest {
             new Money(new BigDecimal(9999999), Currency.getInstance("USD")),
             new BigDecimal("0.00000002"));
     assertEquals(Constants.CREDIT_MAXIMUM_CREDIT_LIMIT, creditCard.getCreditLimit());
-    assertEquals(Constants.CREDIT_MINIMUM_INTEREST_RATE, creditCard.getInterestRate());
+    assertTrue(Constants.CREDIT_MINIMUM_INTEREST_RATE.compareTo(creditCard.getInterestRate()) == 0);
   }
 
   @Test
   void checkDefaultValues() {
     CreditCard creditCard = new CreditCard();
     assertEquals(Constants.CREDIT_DEFAULT_CREDIT_LIMIT, creditCard.getCreditLimit());
-    assertEquals(Constants.CREDIT_DEFAULT_INTEREST_RATE, creditCard.getInterestRate());
+    assertTrue(Constants.CREDIT_DEFAULT_INTEREST_RATE.compareTo(creditCard.getInterestRate()) == 0);
     assertEquals(Constants.DEFAULT_PENALTY_FEE, creditCard.getPenaltyFee());
   }
 

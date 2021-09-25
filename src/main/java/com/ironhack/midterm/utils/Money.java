@@ -38,7 +38,9 @@ public class Money {
     Money money = (Money) o;
 
     if (currency != null ? !currency.equals(money.currency) : money.currency != null) return false;
-    return amount != null ? amount.equals(money.amount) : money.amount == null;
+    return amount != null && money.amount != null
+        ? amount.compareTo(money.amount) == 0
+        : (amount == null && money.amount == null);
   }
 
   @Override

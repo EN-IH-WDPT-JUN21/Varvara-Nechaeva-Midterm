@@ -50,5 +50,5 @@ public abstract class Account {
 
   @ManyToOne private AccountHolder secondaryOwner;
 
-  @NotNull private Date creationDate;
+  @NotNull private Date creationDate = new Date();
 }

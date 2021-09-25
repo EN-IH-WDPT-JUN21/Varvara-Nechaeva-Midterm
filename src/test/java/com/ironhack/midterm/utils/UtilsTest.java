@@ -7,7 +7,6 @@ import java.util.Date;
 
 import static com.ironhack.midterm.utils.Utils.*;
 
-import static java.util.Calendar.MONTH;
 import static java.util.Calendar.DATE;
 import static org.junit.jupiter.api.Assertions.*;
 
