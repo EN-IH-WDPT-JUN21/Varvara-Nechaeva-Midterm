@@ -1,6 +1,6 @@
 package com.ironhack.midterm.dao.account;
 
-import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.dao.user.AccountHolderBase;
 import com.ironhack.midterm.utils.Constants;
 import com.ironhack.midterm.utils.Money;
 import com.ironhack.midterm.utils.PersistentMoneyAmountAndCurrency;
@@ -72,8 +72,8 @@ public class Savings extends DebitAccount {
       Long id,
       Money balance,
       Money penaltyFee,
-      AccountHolder primaryOwner,
-      AccountHolder secondaryOwner,
+      AccountHolderBase primaryOwner,
+      AccountHolderBase secondaryOwner,
       String secretKey,
       Date creationDate,
       Status status,

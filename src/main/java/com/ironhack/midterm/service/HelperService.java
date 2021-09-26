@@ -2,8 +2,9 @@ package com.ironhack.midterm.service;
 
 import com.ironhack.midterm.dao.account.Savings;
 import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.dao.user.AccountHolderBase;
 import com.ironhack.midterm.enums.Status;
-import com.ironhack.midterm.repository.AccountHolderRepository;
+import com.ironhack.midterm.repository.AccountHolderBaseRepository;
 import com.ironhack.midterm.repository.AccountRepository;
 import com.ironhack.midterm.utils.Address;
 import com.ironhack.midterm.utils.Money;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Currency;
 import java.util.Date;
@@ -23,7 +23,7 @@ public class HelperService {
 
   @Autowired private AccountRepository accountRepository;
 
-  @Autowired private AccountHolderRepository accountHolderRepository;
+  @Autowired private AccountHolderBaseRepository accountHolderBaseRepository;
 
   @SneakyThrows
   public void populate() {
@@ -35,9 +35,9 @@ public class HelperService {
     String dateInString = "7-Jun-2013";
     Date date = formatter.parse(dateInString);
 
-    AccountHolder accountHolder1 =
-        new AccountHolder(0L, "Vasja Pupkin", date, primaryAddress, mailingAddress, null, null);
-    accountHolder1 = accountHolderRepository.save(accountHolder1);
+    AccountHolderBase accountHolder1 =
+        new AccountHolder(0L, "Vasja Pupkin", null, null, date, primaryAddress, mailingAddress);
+    accountHolder1 = accountHolderBaseRepository.save(accountHolder1);
 
     Savings savings =
         new Savings(

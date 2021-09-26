@@ -1,24 +1,26 @@
 package com.ironhack.midterm.dao.user;
 
+import com.ironhack.midterm.dao.account.Account;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
 @Entity
-public class ThirdParty {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Setter(value = AccessLevel.NONE)
-  private Long id;
-
-  private String name;
+public class ThirdParty extends AccountHolderBase {
 
   private String hashedKey;
+
+  public ThirdParty(
+      Long id,
+      String name,
+      List<Account> primaryAccounts,
+      List<Account> secondaryAccounts,
+      String hashedKey) {
+    super(id, name, primaryAccounts, secondaryAccounts);
+    this.hashedKey = hashedKey;
+  }
 }

@@ -1,25 +1,21 @@
 package com.ironhack.midterm.dao.user;
 
-import com.ironhack.midterm.utils.Address;
 import com.ironhack.midterm.dao.account.Account;
-import lombok.*;
+import com.ironhack.midterm.utils.Address;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
 @Entity
-public class AccountHolder {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Setter(value = AccessLevel.NONE)
-  private Long id;
+public class AccountHolder extends AccountHolderBase {
 
-  private String name;
   private Date dateOfBirth;
 
   @AttributeOverrides({
@@ -38,9 +34,17 @@ public class AccountHolder {
   @Embedded
   private Address mailingAddress;
 
-  @OneToMany(mappedBy = "primaryOwner")
-  private List<Account> primaryAccounts;
-
-  @OneToMany(mappedBy = "secondaryOwner")
-  private List<Account> secondaryAccounts;
+  public AccountHolder(
+      Long id,
+      String name,
+      List<Account> primaryAccounts,
+      List<Account> secondaryAccounts,
+      Date dateOfBirth,
+      Address primaryAddress,
+      Address mailingAddress) {
+    super(id, name, primaryAccounts, secondaryAccounts);
+    this.dateOfBirth = dateOfBirth;
+    this.primaryAddress = primaryAddress;
+    this.mailingAddress = mailingAddress;
+  }
 }

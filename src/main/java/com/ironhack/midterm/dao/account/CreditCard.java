@@ -1,6 +1,6 @@
 package com.ironhack.midterm.dao.account;
 
-import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.dao.user.AccountHolderBase;
 import com.ironhack.midterm.utils.Constants;
 import com.ironhack.midterm.utils.Money;
 import com.ironhack.midterm.utils.PersistentMoneyAmountAndCurrency;
@@ -75,8 +75,8 @@ public class CreditCard extends Account {
       Long id,
       @NotNull Money balance,
       @NotNull Money penaltyFee,
-      @NotNull AccountHolder primaryOwner,
-      AccountHolder secondaryOwner,
+      @NotNull AccountHolderBase primaryOwner,
+      AccountHolderBase secondaryOwner,
       @NotNull Date creationDate,
       @NotNull Money creditLimit,
       @NotNull BigDecimal interestRate) {

@@ -2,19 +2,20 @@ package com.ironhack.midterm.dao.test_utils;
 
 import com.ironhack.midterm.dao.account.CreditCard;
 import com.ironhack.midterm.dao.account.Savings;
+import com.ironhack.midterm.dao.account.ThirdPartyAccount;
 import com.ironhack.midterm.dao.account.Transaction;
 import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.dao.user.AccountHolderBase;
+import com.ironhack.midterm.dao.user.ThirdParty;
 import com.ironhack.midterm.enums.Status;
-import com.ironhack.midterm.repository.AccountHolderRepository;
+import com.ironhack.midterm.repository.AccountHolderBaseRepository;
 import com.ironhack.midterm.repository.AccountRepository;
 import com.ironhack.midterm.repository.TransactionRepository;
 import com.ironhack.midterm.utils.Address;
 import com.ironhack.midterm.utils.Money;
 import com.ironhack.midterm.utils.Utils;
-import jdk.jshell.execution.Util;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -28,7 +29,7 @@ public class Populator {
 
   @Autowired AccountRepository accountRepository;
   @Autowired TransactionRepository transactionRepository;
-  @Autowired AccountHolderRepository accountHolderRepository;
+  @Autowired AccountHolderBaseRepository accountHolderBaseRepository;
 
   @SneakyThrows
   public void populate() {
@@ -40,14 +41,14 @@ public class Populator {
     String dateInString = "7-Jun-2013";
     Date date = formatter.parse(dateInString);
 
-    AccountHolder accountHolder1 =
-        new AccountHolder(0L, "Vasja Pupkin", date, primaryAddress, mailingAddress, null, null);
-    accountHolder1 = accountHolderRepository.save(accountHolder1);
+    AccountHolderBase accountHolder1 =
+        new AccountHolder(1L, "Vasja Pupkin", null, null, date, primaryAddress, mailingAddress);
+    accountHolder1 = accountHolderBaseRepository.save(accountHolder1);
 
     var accountHolder2 =
-        accountHolderRepository.save(
+        accountHolderBaseRepository.save(
             new AccountHolder(
-                0L, "Petja Pupkin", date, primaryAddress, mailingAddress, null, null));
+                2L, "Petja Pupkin", null, null, date, primaryAddress, mailingAddress));
 
     Savings savings1 =
         new Savings(
@@ -122,5 +123,9 @@ public class Populator {
             savings1,
             savings2,
             new Money(new BigDecimal("10"), Currency.getInstance("USD"))));
+
+    var thirdParty1 =
+        accountHolderBaseRepository.save(new ThirdParty(3L, "PayPal", null, null, "abc"));
+    accountRepository.save(new ThirdPartyAccount(6L, thirdParty1, new Date()));
   }
 }

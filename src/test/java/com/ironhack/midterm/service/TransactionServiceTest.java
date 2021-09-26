@@ -148,4 +148,26 @@ class TransactionServiceTest {
                 .compareTo(accountRepository.findById(5L).get().getBalance().getAmount())
             == 0);
   }
+
+  @Test
+  void Moving_To_ThirdParty_Changes_Balance() {
+    transactionService.moveMoney(
+        2L, 6L, new Money(new BigDecimal(100), Currency.getInstance("USD")));
+
+    assertTrue(
+        new BigDecimal("1000")
+                .compareTo(accountRepository.findById(2L).get().getBalance().getAmount())
+            == 0);
+  }
+
+  @Test
+  void Moving_From_ThirdParty_Changes_Balance() {
+    transactionService.moveMoney(
+        6L, 2L, new Money(new BigDecimal(100), Currency.getInstance("USD")));
+
+    assertTrue(
+        new BigDecimal("1200")
+                .compareTo(accountRepository.findById(2L).get().getBalance().getAmount())
+            == 0);
+  }
 }
