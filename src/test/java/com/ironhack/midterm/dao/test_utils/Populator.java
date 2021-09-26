@@ -38,7 +38,7 @@ public class Populator {
 
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
 
-    String dateInString = "7-Jun-2013";
+    String dateInString = "7-Jun-1900";
     Date date = formatter.parse(dateInString);
 
     AccountHolderBase accountHolder1 =
@@ -48,7 +48,7 @@ public class Populator {
     var accountHolder2 =
         accountHolderBaseRepository.save(
             new AccountHolder(
-                2L, "Petja Pupkin", null, null, date, primaryAddress, mailingAddress));
+                2L, "Petja Pupkin", null, null, new Date(), primaryAddress, mailingAddress));
 
     Savings savings1 =
         new Savings(

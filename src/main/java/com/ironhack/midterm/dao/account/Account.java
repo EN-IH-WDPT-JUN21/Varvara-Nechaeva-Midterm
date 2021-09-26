@@ -1,6 +1,8 @@
 package com.ironhack.midterm.dao.account;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.ironhack.midterm.dao.user.AccountHolderBase;
+import com.ironhack.midterm.dao.user.CustomAccountHolderBaseSerializer;
 import com.ironhack.midterm.utils.Constants;
 import com.ironhack.midterm.utils.Money;
 import com.ironhack.midterm.utils.PersistentMoneyAmountAndCurrency;
@@ -46,9 +48,14 @@ public abstract class Account {
   @NotNull
   private Money penaltyFee = Constants.DEFAULT_PENALTY_FEE;
 
-  @NotNull @ManyToOne private AccountHolderBase primaryOwner;
+  @JsonSerialize(using = CustomAccountHolderBaseSerializer.class)
+  @NotNull
+  @ManyToOne
+  private AccountHolderBase primaryOwner;
 
-  @ManyToOne private AccountHolderBase secondaryOwner;
+  @JsonSerialize(using = CustomAccountHolderBaseSerializer.class)
+  @ManyToOne
+  private AccountHolderBase secondaryOwner;
 
   @NotNull private Date creationDate = new Date();
 }

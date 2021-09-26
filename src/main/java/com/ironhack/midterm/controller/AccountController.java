@@ -1,19 +1,28 @@
 package com.ironhack.midterm.controller;
 
 import com.ironhack.midterm.controller.dto.MoneyDTO;
-import com.ironhack.midterm.dao.account.Account;
-import com.ironhack.midterm.dao.account.Transaction;
+import com.ironhack.midterm.controller.dto.SavingsCreationDTO;
+import com.ironhack.midterm.dao.account.*;
+import com.ironhack.midterm.dao.user.AccountHolder;
+import com.ironhack.midterm.dao.user.AccountHolderBase;
+import com.ironhack.midterm.enums.Status;
+import com.ironhack.midterm.repository.AccountHolderBaseRepository;
 import com.ironhack.midterm.repository.AccountRepository;
 import com.ironhack.midterm.service.HelperService;
 import com.ironhack.midterm.service.TransactionService;
+import com.ironhack.midterm.utils.Constants;
 import com.ironhack.midterm.utils.Money;
 
+import com.ironhack.midterm.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.Currency;
+import java.util.Date;
 import java.util.Objects;
 
 @RestController
@@ -21,6 +30,7 @@ import java.util.Objects;
 public class AccountController {
 
   @Autowired AccountRepository accountRepository;
+  @Autowired AccountHolderBaseRepository accountHolderBaseRepository;
   @Autowired TransactionService transactionService;
 
   @PostMapping("/{from_id}/transfer")
@@ -85,6 +95,61 @@ public class AccountController {
     account.setBalance(moneyDTO.asMoney());
     account = accountRepository.save(account);
     return account.getBalance();
+  }
+
+  @PutMapping("/new/savings")
+  @ResponseStatus(HttpStatus.OK)
+  public DebitAccount newSavings(@RequestBody @Valid SavingsCreationDTO savingsCreationDTO) {
+    var primaryOwner =
+        accountHolderBaseRepository
+            .findById(savingsCreationDTO.getPrimaryOwnerId())
+            .orElseThrow(
+                () ->
+                    new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Primary Owner " + savingsCreationDTO.getPrimaryOwnerId() + " not found"));
+
+    AccountHolderBase secondaryOwner = null;
+    if (savingsCreationDTO.getSecondaryOwnerId() != null) {
+      secondaryOwner =
+          accountHolderBaseRepository
+              .findById(savingsCreationDTO.getSecondaryOwnerId())
+              .orElseThrow(
+                  () ->
+                      new ResponseStatusException(
+                          HttpStatus.NOT_FOUND,
+                          "Primary Owner "
+                              + savingsCreationDTO.getSecondaryOwnerId()
+                              + " not found"));
+    }
+    if (primaryOwner instanceof AccountHolder) {
+      var accountHolder = (AccountHolder) primaryOwner;
+      if (Utils.getDiffYears(accountHolder.getDateOfBirth(), new Date())
+          < Constants.CHECKING_STUDENT_AGE) {
+        return accountRepository.save(
+            new StudentChecking(
+                0L,
+                new Money(new BigDecimal("0.00"), Currency.getInstance("USD")),
+                savingsCreationDTO.getPenaltyFee().asMoney(),
+                primaryOwner,
+                secondaryOwner,
+                savingsCreationDTO.getSecretKey(),
+                new Date(),
+                Status.ACTIVE));
+      }
+    }
+    return accountRepository.save(
+        new Savings(
+            0L,
+            new Money(new BigDecimal("0.00"), Currency.getInstance("USD")),
+            savingsCreationDTO.getPenaltyFee().asMoney(),
+            primaryOwner,
+            secondaryOwner,
+            savingsCreationDTO.getSecretKey(),
+            new Date(),
+            Status.ACTIVE,
+            savingsCreationDTO.getInterestRate(),
+            savingsCreationDTO.getMinimumBalance().asMoney()));
   }
 
   @Autowired HelperService helperService;

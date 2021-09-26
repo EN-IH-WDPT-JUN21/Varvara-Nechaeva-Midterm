@@ -2,8 +2,12 @@ package com.ironhack.midterm.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ironhack.midterm.controller.dto.MoneyDTO;
+import com.ironhack.midterm.controller.dto.SavingsCreationDTO;
+import com.ironhack.midterm.dao.account.Savings;
+import com.ironhack.midterm.dao.account.StudentChecking;
 import com.ironhack.midterm.dao.test_utils.Populator;
 import com.ironhack.midterm.dao.user.Admin;
+import com.ironhack.midterm.repository.AccountRepository;
 import com.ironhack.midterm.repository.AdminRepository;
 import com.ironhack.midterm.utils.Money;
 import lombok.SneakyThrows;
@@ -31,6 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class AccountControllerTest {
+  @Autowired private AccountRepository accountRepository;
+
   private MockMvc mockMvc;
   private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -181,5 +187,74 @@ class AccountControllerTest {
                     .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
             .andReturn();
+  }
+
+  @SneakyThrows
+  @Test
+  void createNewSavings() {
+    String body =
+        objectMapper.writeValueAsString(
+            new SavingsCreationDTO(
+                1L,
+                null,
+                "bcd",
+                new MoneyDTO(new Money(new BigDecimal("10"))),
+                new MoneyDTO(new Money(new BigDecimal("100"))),
+                new BigDecimal("0.01")));
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                put("/account/new/savings")
+                    .with(httpBasic("admin", "123456"))
+                    .content(body)
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    var root = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    var id = root.get("id").asLong();
+    var optionalAccount = accountRepository.findById(id);
+    assertTrue(optionalAccount.isPresent());
+
+    var account = optionalAccount.get();
+    assertTrue(account.getBalance().getAmount().compareTo(BigDecimal.ZERO) == 0);
+
+    assertTrue(account instanceof Savings);
+    var savings = (Savings) account;
+    assertTrue(savings.getMinimumBalance().getAmount().compareTo(new BigDecimal("100")) == 0);
+  }
+
+  @SneakyThrows
+  @Test
+  void createNewSavingsCreatesStudentChecking() {
+    String body =
+        objectMapper.writeValueAsString(
+            new SavingsCreationDTO(
+                2L,
+                null,
+                "bcd",
+                new MoneyDTO(new Money(new BigDecimal("10"))),
+                new MoneyDTO(new Money(new BigDecimal("100"))),
+                new BigDecimal("0.01")));
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                put("/account/new/savings")
+                    .with(httpBasic("admin", "123456"))
+                    .content(body)
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    var root = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    var id = root.get("id").asLong();
+    var optionalAccount = accountRepository.findById(id);
+    assertTrue(optionalAccount.isPresent());
+
+    var account = optionalAccount.get();
+    assertTrue(account.getBalance().getAmount().compareTo(BigDecimal.ZERO) == 0);
+
+    assertTrue(account instanceof StudentChecking);
+    // var studentChecking = (StudentChecking) account;
   }
 }
