@@ -170,4 +170,30 @@ class TransactionServiceTest {
                 .compareTo(accountRepository.findById(2L).get().getBalance().getAmount())
             == 0);
   }
+
+  @Test
+  void Penalty_Applied_Changes_Balance() {
+    transactionService.moveMoney(
+        2L, 6L, new Money(new BigDecimal(901), Currency.getInstance("USD")));
+
+    assertTrue(
+        new BigDecimal("99")
+                .compareTo(accountRepository.findById(2L).get().getBalance().getAmount())
+            == 0);
+  }
+
+  @Test
+  void Cant_Have_Negative_Balance_After_Penalty() {
+    assertThrows(
+        ResponseStatusException.class,
+        () -> {
+          transactionService.moveMoney(
+              2L, 6L, new Money(new BigDecimal(1050), Currency.getInstance("USD")));
+        });
+
+    assertTrue(
+        new BigDecimal("1100")
+                .compareTo(accountRepository.findById(2L).get().getBalance().getAmount())
+            == 0);
+  }
 }

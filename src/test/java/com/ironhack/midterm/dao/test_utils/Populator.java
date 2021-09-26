@@ -62,6 +62,7 @@ public class Populator {
             Status.ACTIVE,
             new BigDecimal("1.23"),
             new Money(new BigDecimal("10.00"), Currency.getInstance("USD")));
+    savings1.setMinimumBalance(new Money(new BigDecimal("10.00"), Currency.getInstance("USD")));
 
     Savings savings2 =
         new Savings(
@@ -74,7 +75,7 @@ public class Populator {
             new Date(),
             Status.ACTIVE,
             new BigDecimal("1.23"),
-            new Money(new BigDecimal("10.00"), Currency.getInstance("USD")));
+            new Money(new BigDecimal("200.00"), Currency.getInstance("USD")));
 
     accountRepository.save(savings1);
     accountRepository.save(savings2);

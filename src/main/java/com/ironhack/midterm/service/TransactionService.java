@@ -2,6 +2,7 @@ package com.ironhack.midterm.service;
 
 import com.ironhack.midterm.dao.account.Account;
 import com.ironhack.midterm.dao.account.DebitAccount;
+import com.ironhack.midterm.dao.account.Savings;
 import com.ironhack.midterm.dao.account.Transaction;
 import com.ironhack.midterm.enums.Status;
 import com.ironhack.midterm.repository.AccountRepository;
@@ -56,6 +57,13 @@ public class TransactionService {
     }
 
     accountFrom.getBalance().decreaseAmount(money);
+    if (accountFrom instanceof Savings) {
+      Savings savings = (Savings) accountFrom;
+      if (accountFrom.getBalance().getAmount().compareTo(savings.getMinimumBalance().getAmount())
+          < 0) {
+        accountFrom.getBalance().decreaseAmount(accountFrom.getPenaltyFee());
+      }
+    }
     if (accountFrom.getBalance().getAmount().compareTo(BigDecimal.ZERO) < 0) {
       throw new ResponseStatusException(
           HttpStatus.NOT_ACCEPTABLE, "Account with id " + fromId + " has insufficient balance.");
