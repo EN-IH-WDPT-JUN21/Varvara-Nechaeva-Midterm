@@ -5,9 +5,11 @@ import com.ironhack.midterm.controller.dto.SavingsCreationDTO;
 import com.ironhack.midterm.dao.account.*;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.AccountHolderBase;
+import com.ironhack.midterm.dao.user.ThirdParty;
 import com.ironhack.midterm.enums.Status;
 import com.ironhack.midterm.repository.AccountHolderBaseRepository;
 import com.ironhack.midterm.repository.AccountRepository;
+import com.ironhack.midterm.repository.ThirdPartyRepository;
 import com.ironhack.midterm.service.HelperService;
 import com.ironhack.midterm.service.TransactionService;
 import com.ironhack.midterm.utils.Constants;
@@ -32,6 +34,7 @@ public class AccountController {
   @Autowired AccountRepository accountRepository;
   @Autowired AccountHolderBaseRepository accountHolderBaseRepository;
   @Autowired TransactionService transactionService;
+  @Autowired ThirdPartyRepository thirdPartyRepository;
 
   @PostMapping("/{from_id}/transfer")
   @ResponseStatus(HttpStatus.OK)
@@ -150,6 +153,22 @@ public class AccountController {
             Status.ACTIVE,
             savingsCreationDTO.getInterestRate(),
             savingsCreationDTO.getMinimumBalance().asMoney()));
+  }
+
+  @PutMapping("/new/thirdparty")
+  @ResponseStatus(HttpStatus.OK)
+  public ThirdPartyAccount newThirdParty(
+      @RequestParam(name = "name") String name,
+      @RequestParam(name = "hashedKey") String hashedKey) {
+    if (thirdPartyRepository.findByHashedKey(hashedKey).isPresent()) {
+      throw new ResponseStatusException(
+          HttpStatus.NOT_ACCEPTABLE,
+          "Third Party with hashed Key  " + hashedKey + " already exists");
+    }
+
+    var thirdParty = thirdPartyRepository.save(new ThirdParty(0L, name, null, null, hashedKey));
+
+    return accountRepository.save(new ThirdPartyAccount(0L, thirdParty, new Date()));
   }
 
   @Autowired HelperService helperService;

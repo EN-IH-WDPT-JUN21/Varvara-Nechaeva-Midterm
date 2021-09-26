@@ -5,8 +5,10 @@ import com.ironhack.midterm.controller.dto.MoneyDTO;
 import com.ironhack.midterm.controller.dto.SavingsCreationDTO;
 import com.ironhack.midterm.dao.account.Savings;
 import com.ironhack.midterm.dao.account.StudentChecking;
+import com.ironhack.midterm.dao.account.ThirdPartyAccount;
 import com.ironhack.midterm.dao.test_utils.Populator;
 import com.ironhack.midterm.dao.user.Admin;
+import com.ironhack.midterm.dao.user.ThirdParty;
 import com.ironhack.midterm.repository.AccountRepository;
 import com.ironhack.midterm.repository.AdminRepository;
 import com.ironhack.midterm.utils.Money;
@@ -256,5 +258,52 @@ class AccountControllerTest {
 
     assertTrue(account instanceof StudentChecking);
     // var studentChecking = (StudentChecking) account;
+  }
+
+  @SneakyThrows
+  @Test
+  void createNewThirdParty() {
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                put("/account/new/thirdparty")
+                    .with(httpBasic("admin", "123456"))
+                    .param("name", "BitCoin")
+                    .param("hashedKey", "xxx"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    var root = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+    var id = root.get("id").asLong();
+    var optionalAccount = accountRepository.findById(id);
+    assertTrue(optionalAccount.isPresent());
+
+    var account = optionalAccount.get();
+
+    assertTrue(account instanceof ThirdPartyAccount);
+  }
+
+  @SneakyThrows
+  @Test
+  void createDuplicateHashedKeyThirdPartyFails() {
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                put("/account/new/thirdparty")
+                    .with(httpBasic("admin", "123456"))
+                    .param("name", "BitCoin")
+                    .param("hashedKey", "xxx"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    mvcResult =
+        mockMvc
+            .perform(
+                put("/account/new/thirdparty")
+                    .with(httpBasic("admin", "123456"))
+                    .param("name", "LightCoin")
+                    .param("hashedKey", "xxx"))
+            .andExpect(status().isNotAcceptable())
+            .andReturn();
   }
 }
