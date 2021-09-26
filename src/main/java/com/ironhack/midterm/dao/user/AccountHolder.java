@@ -15,7 +15,6 @@ import java.util.List;
 @Getter
 @Entity
 public class AccountHolder extends AccountHolderBase {
-
   private Date dateOfBirth;
 
   @AttributeOverrides({
@@ -36,13 +35,15 @@ public class AccountHolder extends AccountHolderBase {
 
   public AccountHolder(
       Long id,
+      String login,
+      String password,
       String name,
       List<Account> primaryAccounts,
       List<Account> secondaryAccounts,
       Date dateOfBirth,
       Address primaryAddress,
       Address mailingAddress) {
-    super(id, name, primaryAccounts, secondaryAccounts);
+    super(id, login, password, name, primaryAccounts, secondaryAccounts);
     this.dateOfBirth = dateOfBirth;
     this.primaryAddress = primaryAddress;
     this.mailingAddress = mailingAddress;

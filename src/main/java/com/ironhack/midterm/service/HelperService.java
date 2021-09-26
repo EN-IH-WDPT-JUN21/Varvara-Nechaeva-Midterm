@@ -10,6 +10,8 @@ import com.ironhack.midterm.utils.Address;
 import com.ironhack.midterm.utils.Money;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -35,8 +37,18 @@ public class HelperService {
     String dateInString = "7-Jun-2013";
     Date date = formatter.parse(dateInString);
 
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     AccountHolderBase accountHolder1 =
-        new AccountHolder(0L, "Vasja Pupkin", null, null, date, primaryAddress, mailingAddress);
+        new AccountHolder(
+            0L,
+            "vasja",
+            passwordEncoder.encode("123"),
+            "Vasja Pupkin",
+            null,
+            null,
+            date,
+            primaryAddress,
+            mailingAddress);
     accountHolder1 = accountHolderBaseRepository.save(accountHolder1);
 
     Savings savings =

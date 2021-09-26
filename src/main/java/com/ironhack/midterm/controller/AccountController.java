@@ -18,6 +18,9 @@ import com.ironhack.midterm.utils.Money;
 import com.ironhack.midterm.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -43,11 +46,6 @@ public class AccountController {
       @RequestParam(name = "to_id") long toId,
       @RequestParam(name = "to_name") String toName,
       @RequestBody @Valid MoneyDTO moneyDTO) {
-    //    AccountHolder accountHolder = new AccountHolder(); // currently authenticated user????
-    //
-    //    if (id != accountHolder.getId())
-    //      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized");
-
     Account accountTo =
         accountRepository
             .findById(toId)
@@ -62,17 +60,19 @@ public class AccountController {
           HttpStatus.BAD_REQUEST, "Wrong owner name for account with id " + toId);
     }
 
+    checkUserIsOwnerOrThrow(fromId);
+
     return transactionService.moveMoney(fromId, toId, moneyDTO.asMoney());
   }
 
   @GetMapping("/{id}/balance")
   @ResponseStatus(HttpStatus.OK)
   public Money getBalance(@PathVariable(name = "id") long id) {
-    //    AccountHolder accountHolder = new AccountHolder(); // currently authenticated user????
-    //
-    //    if (id != accountHolder.getId())
-    //      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized");
+    var account = checkUserIsOwnerOrThrow(id);
+    return account.getBalance();
+  }
 
+  private Account checkUserIsOwnerOrThrow(Long id) {
     Account account =
         accountRepository
             .findById(id)
@@ -80,7 +80,24 @@ public class AccountController {
                 () ->
                     new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Account " + id + " not found"));
-    return account.getBalance();
+
+    UserDetails userDetails =
+        (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var optionalAccountHolderBase =
+        accountHolderBaseRepository.findByLogin(userDetails.getUsername());
+    if (optionalAccountHolderBase.isEmpty()
+        || !(optionalAccountHolderBase.get() instanceof AccountHolder)) {
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND,
+          "Account holder with login " + userDetails.getUsername() + " not found");
+    }
+    var userAccountHolder = (AccountHolder) optionalAccountHolderBase.get();
+    if (account.getPrimaryOwner().getId() != userAccountHolder.getId()
+        && (account.getSecondaryOwner() == null
+            || account.getSecondaryOwner().getId() != userAccountHolder.getId()))
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized");
+
+    return account;
   }
 
   @PatchMapping("/{id}/balance")

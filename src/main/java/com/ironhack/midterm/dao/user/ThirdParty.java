@@ -20,7 +20,7 @@ public class ThirdParty extends AccountHolderBase {
       List<Account> primaryAccounts,
       List<Account> secondaryAccounts,
       String hashedKey) {
-    super(id, name, primaryAccounts, secondaryAccounts);
+    super(id, null, null, name, primaryAccounts, secondaryAccounts);
     this.hashedKey = hashedKey;
   }
 }

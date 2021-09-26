@@ -8,16 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
 @Entity
-public class Admin {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Setter(value = AccessLevel.NONE)
-  private Long id;
-
-  private String name;
-  private String password;
+public class Admin extends User {
+  public Admin(Long id, String login, String password) {
+    super(id, login, password);
+  }
 }

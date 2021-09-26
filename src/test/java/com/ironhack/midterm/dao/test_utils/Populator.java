@@ -6,6 +6,7 @@ import com.ironhack.midterm.dao.account.ThirdPartyAccount;
 import com.ironhack.midterm.dao.account.Transaction;
 import com.ironhack.midterm.dao.user.AccountHolder;
 import com.ironhack.midterm.dao.user.AccountHolderBase;
+import com.ironhack.midterm.dao.user.Admin;
 import com.ironhack.midterm.dao.user.ThirdParty;
 import com.ironhack.midterm.enums.Status;
 import com.ironhack.midterm.repository.AccountHolderBaseRepository;
@@ -16,6 +17,8 @@ import com.ironhack.midterm.utils.Money;
 import com.ironhack.midterm.utils.Utils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -41,14 +44,32 @@ public class Populator {
     String dateInString = "7-Jun-1900";
     Date date = formatter.parse(dateInString);
 
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     AccountHolderBase accountHolder1 =
-        new AccountHolder(1L, "Vasja Pupkin", null, null, date, primaryAddress, mailingAddress);
+        new AccountHolder(
+            1L,
+            "vasja",
+            passwordEncoder.encode("123"),
+            "Vasja Pupkin",
+            null,
+            null,
+            date,
+            primaryAddress,
+            mailingAddress);
     accountHolder1 = accountHolderBaseRepository.save(accountHolder1);
 
     var accountHolder2 =
         accountHolderBaseRepository.save(
             new AccountHolder(
-                2L, "Petja Pupkin", null, null, new Date(), primaryAddress, mailingAddress));
+                2L,
+                "petja",
+                passwordEncoder.encode("123"),
+                "Petja Pupkin",
+                null,
+                null,
+                new Date(),
+                primaryAddress,
+                mailingAddress));
 
     Savings savings1 =
         new Savings(

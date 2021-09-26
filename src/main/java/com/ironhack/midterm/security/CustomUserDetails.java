@@ -2,6 +2,7 @@ package com.ironhack.midterm.security;
 
 import com.ironhack.midterm.dao.user.Admin;
 
+import com.ironhack.midterm.dao.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,9 +12,9 @@ import java.util.HashSet;
 
 public class CustomUserDetails implements UserDetails {
 
-  private Admin user;
+  private final User user;
 
-  public CustomUserDetails(Admin user) {
+  public CustomUserDetails(User user) {
     this.user = user;
   }
 
@@ -21,9 +22,8 @@ public class CustomUserDetails implements UserDetails {
   public Collection<? extends GrantedAuthority> getAuthorities() {
 
     Collection<GrantedAuthority> authorities = new HashSet<>();
-    // for (Role role : user.getRoles()) {
-    authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-    // }
+    authorities.add(
+        new SimpleGrantedAuthority(user instanceof Admin ? "ROLE_ADMIN" : "ROLE_ACCOUNT_HOLDER"));
 
     return authorities;
   }
@@ -35,7 +35,7 @@ public class CustomUserDetails implements UserDetails {
 
   @Override
   public String getUsername() {
-    return user.getName();
+    return user.getLogin();
   }
 
   @Override

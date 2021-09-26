@@ -9,7 +9,7 @@ import com.ironhack.midterm.dao.account.ThirdPartyAccount;
 import com.ironhack.midterm.dao.test_utils.Populator;
 import com.ironhack.midterm.dao.user.Admin;
 import com.ironhack.midterm.repository.AccountRepository;
-import com.ironhack.midterm.repository.AdminRepository;
+import com.ironhack.midterm.repository.UserRepository;
 import com.ironhack.midterm.utils.Money;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +47,7 @@ public class AdminTest {
   void setup(
       @Autowired WebApplicationContext webApplicationContext,
       @Autowired Populator populator,
-      @Autowired AdminRepository adminRepository) {
+      @Autowired UserRepository userRepository) {
 
     mockMvc =
         MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
@@ -55,7 +55,7 @@ public class AdminTest {
     populator.populate();
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    adminRepository.save(new Admin(0L, "admin", passwordEncoder.encode("123456")));
+    userRepository.save(new Admin(0L, "admin", passwordEncoder.encode("123456")));
   }
 
   @SneakyThrows
