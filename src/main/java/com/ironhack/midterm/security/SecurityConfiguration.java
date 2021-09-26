@@ -34,6 +34,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http.authorizeRequests()
         .mvcMatchers(HttpMethod.PATCH, "/account/**")
         .authenticated()
+        .mvcMatchers(HttpMethod.PUT, "/account/new/**")
+        .authenticated()
         .anyRequest()
         .permitAll();
   }

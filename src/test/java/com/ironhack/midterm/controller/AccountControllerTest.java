@@ -193,6 +193,29 @@ class AccountControllerTest {
 
   @SneakyThrows
   @Test
+  void createNewSavingsUnauthorizedFails() {
+    String body =
+        objectMapper.writeValueAsString(
+            new SavingsCreationDTO(
+                1L,
+                null,
+                "bcd",
+                new MoneyDTO(new Money(new BigDecimal("10"))),
+                new MoneyDTO(new Money(new BigDecimal("100"))),
+                new BigDecimal("0.01")));
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                put("/account/new/savings")
+                    // .with(httpBasic("admin", "123456"))
+                    .content(body)
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andReturn();
+  }
+
+  @SneakyThrows
+  @Test
   void createNewSavings() {
     String body =
         objectMapper.writeValueAsString(
@@ -258,6 +281,20 @@ class AccountControllerTest {
 
     assertTrue(account instanceof StudentChecking);
     // var studentChecking = (StudentChecking) account;
+  }
+
+  @SneakyThrows
+  @Test
+  void createNewThirdPartyUnauthorizedFails() {
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                put("/account/new/thirdparty")
+                    // .with(httpBasic("admin", "123456"))
+                    .param("name", "BitCoin")
+                    .param("hashedKey", "xxx"))
+            .andExpect(status().isUnauthorized())
+            .andReturn();
   }
 
   @SneakyThrows
